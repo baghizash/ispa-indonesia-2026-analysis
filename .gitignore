@@ -1,0 +1,4 @@
+data/ispa_indonesia.db
+*.db
+__pycache__/
+.ipynb_checkpoints/
