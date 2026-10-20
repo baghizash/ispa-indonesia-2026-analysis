@@ -19,17 +19,32 @@ os.makedirs(CHARTS, exist_ok=True)
 
 plt.rcParams.update(
     {
+        "font.family": "Noto Sans",
         "font.size": 11,
         "axes.titlesize": 13,
         "axes.titleweight": "bold",
         "figure.dpi": 150,
+        "figure.facecolor": "#F0E8D8",
+        "axes.facecolor": "#F0E8D8",
+        "savefig.facecolor": "#F0E8D8",
+        "text.color": "#2A1E33",
+        "axes.labelcolor": "#2A1E33",
+        "axes.edgecolor": "#B7A888",
+        "xtick.color": "#2A1E33",
+        "ytick.color": "#2A1E33",
+        "axes.grid": True,
+        "grid.color": "#D9CFB8",
+        "grid.linewidth": 0.6,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
     }
 )
-CORAL = "#E76F51"
-NAVY = "#1E3A8A"
-TEAL = "#0D9488"
-GRAY = "#6B7280"
-DARK = "#1F2937"
+# Tema T3: oat / plum / tangerine
+CORAL = "#EF7D1A"  # tangerine: seri penekanan
+NAVY = "#5E2A72"  # plum: seri utama
+TEAL = "#8A5CA6"  # plum muda: seri sekunder
+GRAY = "#A79B87"  # abu oat netral
+DARK = "#2A1E33"  # ink
 
 skdr = pd.read_csv(os.path.join(COMPILED, "skdr_provinsi_2026.csv"))
 karhutla_prov = pd.read_csv(os.path.join(COMPILED, "karhutla_provinsi.csv"))
@@ -44,7 +59,8 @@ TOTAL_KARHUTLA = 283270
 # 01 - Top 10 provinsi, kasus absolut (SKDR)
 d = skdr.sort_values("kasus_skdr_2026", ascending=True)
 fig, ax = plt.subplots(figsize=(9, 5.5))
-ax.barh(d["provinsi"], d["kasus_skdr_2026"] / 1000, color=CORAL)
+bar_colors = [NAVY] * (len(d) - 1) + [CORAL]
+ax.barh(d["provinsi"], d["kasus_skdr_2026"] / 1000, color=bar_colors)
 for i, v in enumerate(d["kasus_skdr_2026"] / 1000):
     ax.text(v + 30, i, f"{v:,.0f}", va="center", fontsize=10)
 ax.set_xlabel("Kasus ISPA 2026 (ribu laporan, SKDR s.d. 3 Okt 2026)")
@@ -61,10 +77,11 @@ fig, ax = plt.subplots(figsize=(7, 5))
 ax.pie(
     [top10, sisa],
     labels=[f"10 provinsi teratas\n{top10:,} laporan", f"Provinsi lain\n{sisa:,} laporan"],
-    colors=[CORAL, GRAY],
+    colors=[NAVY, GRAY],
     autopct="%1.1f%%",
     startangle=90,
 )
+ax.grid(False)
 ax.set_title("Pangsa 10 Provinsi Teratas dari Total Nasional\n(14.088.945 laporan SKDR 2026)")
 fig.tight_layout()
 fig.savefig(f"{CHARTS}/02_pangsa_top10.png")
@@ -75,7 +92,7 @@ d = skdr.dropna(subset=["populasi_2026"]).copy()
 d["per_1000"] = 1000 * d["kasus_skdr_2026"] / d["populasi_2026"]
 d = d.sort_values("per_1000", ascending=True)
 fig, ax = plt.subplots(figsize=(9, 5))
-colors = [NAVY if p == "DKI Jakarta" else TEAL for p in d["provinsi"]]
+colors = [CORAL if p == "DKI Jakarta" else NAVY for p in d["provinsi"]]
 ax.barh(d["provinsi"], d["per_1000"], color=colors)
 for i, v in enumerate(d["per_1000"]):
     ax.text(v + 2, i, f"{v:.1f}", va="center", fontsize=10)
@@ -89,10 +106,11 @@ plt.close(fig)
 # 04 - Seri karhutla: Kalsel vs Sumsel vs 5 provinsi lain
 d = karhutla_prov.sort_values("kasus_karhutla_18agt_13okt_2026", ascending=True)
 fig, ax = plt.subplots(figsize=(9, 4))
-ax.barh(d["provinsi"], d["kasus_karhutla_18agt_13okt_2026"], color=[CORAL, TEAL, GRAY])
+bar_colors = [TEAL] * (len(d) - 2) + [NAVY, CORAL]
+ax.barh(d["provinsi"], d["kasus_karhutla_18agt_13okt_2026"], color=bar_colors)
 for i, v in enumerate(d["kasus_karhutla_18agt_13okt_2026"]):
     ax.text(v + 2500, i, f"{v:,} ({100*v/TOTAL_KARHUTLA:.1f}%)", va="center", fontsize=10)
-ax.set_xlabel("Kasus ISPA karhutla, 18 Agt–13 Okt 2026")
+ax.set_xlabel("Kasus ISPA karhutla, 18 Agt - 13 Okt 2026")
 ax.set_title("Dua Provinsi Menyumbang Lebih dari Separuh Kasus ISPA Karhutla")
 ax.set_xlim(0, 175000)
 fig.tight_layout()
@@ -105,12 +123,13 @@ diatas5 = 219559
 fig, ax = plt.subplots(figsize=(7, 5))
 ax.pie(
     [diatas5, balita],
-    labels=[f"Usia >5 tahun\n{diatas5:,} (77,5%)", f"Balita (0–5 tahun)\n{balita:,} (22,5%)"],
+    labels=[f"Usia >5 tahun\n{diatas5:,} (77,5%)", f"Balita (0-5 tahun)\n{balita:,} (22,5%)"],
     colors=[NAVY, CORAL],
     autopct="%1.1f%%",
     startangle=90,
 )
-ax.set_title("Kasus ISPA Karhutla menurut Usia\n(283.270 kasus, 18 Agt–13 Okt 2026)")
+ax.grid(False)
+ax.set_title("Kasus ISPA Karhutla menurut Usia\n(283.270 kasus, 18 Agt - 13 Okt 2026)")
 fig.tight_layout()
 fig.savefig(f"{CHARTS}/05_karhutla_usia.png")
 plt.close(fig)
@@ -120,7 +139,8 @@ d = karhutla_series.dropna(subset=["kasus_kumulatif"]).copy()
 d["tanggal"] = pd.to_datetime(d["tanggal"])
 d = d.sort_values("tanggal")
 fig, ax = plt.subplots(figsize=(8, 5))
-ax.plot(d["tanggal"], d["kasus_kumulatif"], marker="o", color=CORAL, linewidth=2)
+ax.plot(d["tanggal"], d["kasus_kumulatif"], marker="o", color=NAVY, linewidth=2,
+        markerfacecolor=CORAL, markeredgecolor=CORAL)
 for _, r in d.iterrows():
     ax.text(r["tanggal"], r["kasus_kumulatif"] + 12000, f"{int(r['kasus_kumulatif']):,}", ha="center", fontsize=10)
 ax.set_ylabel("Kasus kumulatif")
@@ -133,7 +153,7 @@ plt.close(fig)
 # 07 - ISPU: 10 wilayah PM2,5 terburuk
 d = ispu.sort_values("pm25_12okt2026_1500wib", ascending=True)
 fig, ax = plt.subplots(figsize=(9, 5.5))
-ax.barh(d["wilayah"], d["pm25_12okt2026_1500wib"], color=DARK)
+ax.barh(d["wilayah"], d["pm25_12okt2026_1500wib"], color=NAVY)
 ax.axvline(300, color=CORAL, linestyle="--", linewidth=1.5)
 ax.text(310, -0.7, "Ambang ISPU 'berbahaya' (>300)", color=CORAL, fontsize=9)
 for i, v in enumerate(d["pm25_12okt2026_1500wib"]):
@@ -152,7 +172,7 @@ ax.plot(bulan, jakarta["kasus_ispa_jakarta_2023"], marker="o", color=NAVY, linew
 for x, v in enumerate(jakarta["kasus_ispa_jakarta_2023"]):
     ax.text(x, v + 2500, f"{v:,}", ha="center", fontsize=9)
 ax.set_ylabel("Kasus ISPA per bulan")
-ax.set_title("Kasus ISPA Jakarta per Bulan, Januari–Juni 2023\n(Puncak Maret: 119.734 kasus)")
+ax.set_title("Kasus ISPA Jakarta per Bulan, Januari-Juni 2023\n(Puncak Maret: 119.734 kasus)")
 ax.set_ylim(85000, 132000)
 fig.tight_layout()
 fig.savefig(f"{CHARTS}/08_jakarta_bulanan.png")
@@ -161,7 +181,7 @@ plt.close(fig)
 # 09 - Laporan mingguan nasional: awal vs puncak musim kemarau
 fig, ax = plt.subplots(figsize=(7, 4.5))
 ax.bar(
-    ["Awal kemarau\n(minggu 27–31)", "Puncak kemarau\n(minggu 32–37)"],
+    ["Awal kemarau\n(minggu 27-31)", "Puncak kemarau\n(minggu 32-37)"],
     mingguan["laporan_per_minggu"],
     color=[TEAL, CORAL],
 )
@@ -175,10 +195,10 @@ fig.savefig(f"{CHARTS}/09_mingguan_nasional.png")
 plt.close(fig)
 
 # 10 - Pangsa balita antar snapshot karhutla (stabil di ~23%)
-labels = ["Agt–21 Sep 2026\n(174.694 kasus)", "18 Agt–13 Okt 2026\n(283.270 kasus)"]
+labels = ["Agt - 21 Sep 2026\n(174.694 kasus)", "18 Agt - 13 Okt 2026\n(283.270 kasus)"]
 balita_pct = [100 * 40363 / 174694, 100 * 63711 / 283270]
 fig, ax = plt.subplots(figsize=(7, 4.5))
-ax.bar(labels, balita_pct, color=CORAL)
+ax.bar(labels, balita_pct, color=NAVY)
 for i, v in enumerate(balita_pct):
     ax.text(i, v + 0.5, f"{v:.1f}%", ha="center", fontsize=11)
 ax.set_ylabel("Pangsa balita dari total kasus karhutla (%)")
