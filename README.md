@@ -120,3 +120,32 @@ python build_module.py             # membangun modul belajar (PDF)
 ## Deliverables lain di repo ini
 - Portofolio-Analisis-ISPA-Indonesia.pptx — deck portofolio 10 slide (16:9)
 - Modul-Analisis-ISPA-Indonesia.pdf — modul belajar step-by-step (24 halaman)
+
+## Dashboard Power BI
+
+Kit Power BI untuk proyek ini ada di folder `powerbi/`: 12 CSV hasil turunan
+dari `data/compiled/` (dibangun oleh `powerbi/build_powerbi_kit.py`, tidak ada
+agregat yang diketik tangan), measures DAX (`powerbi/measures_dax.md`),
+layout 4 halaman (`powerbi/dashboard_layout.md`), dan panduan membangunnya
+(`powerbi/build_guide.md`). Seri SKDR dan seri karhutla tetap terpisah di
+semua tabel fakta kit, sama seperti di analisis utama.
+
+Ringkasan 4 halaman dashboard:
+
+1. **Ringkasan Nasional SKDR** — KPI total nasional 14.088.945, pangsa 10
+   provinsi teratas 74,7%, Jakarta 150,0 per 1.000 penduduk, dan tren laporan
+   mingguan per periode.
+2. **Per Kapita & Konsentrasi Provinsi** — peringkat kasus per 1.000
+   penduduk, pangsa tiap provinsi, dan tabel provinsi lengkap dengan
+   populasi serta kualitas angka.
+3. **Karhutla: Dampak Kesehatan (seri terpisah)** — total 283.270 kasus,
+   pertumbuhan 21,1x, pangsa balita 22,5%, dan sebaran antarprovinsi, dengan
+   pita peringatan bahwa seri ini tidak dijumlahkan ke SKDR.
+4. **Kualitas Udara & Konteks Jakarta + Metodologi** — PM2.5 per wilayah
+   (Barito Kuala 1.837, 6,1x ambang berbahaya), tren bulanan Jakarta, dan
+   tabel metodologi serta keterbatasan.
+
+File `.pbix` (`ISPA-Indonesia-2026.pbix`) dibangun secara lokal di Power BI
+Desktop mengikuti `build_guide.md` dan tidak disimpan di repo ini; screenshot
+dashboard akan ditambahkan setelah build selesai. Pratinjau layout halaman 1
+tersedia di `powerbi/dashboard_preview_halaman1.png`.
